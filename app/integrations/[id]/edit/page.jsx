@@ -389,11 +389,11 @@ export default function EditIntegrationPage() {
     const dataToSubmit = prepareFormDataForSubmission();
     console.log('Submitting updated integration:', dataToSubmit);
     alert('Integration updated (simulated)');
-    router.push(`/integrations/${params.id}`);
+    router.push('/integrations');
   };
 
   const handleCancel = () => {
-    router.push(`/integrations/${params.id}`);
+    router.push('/integrations');
   };
 
   if (loading) {
@@ -467,7 +467,7 @@ export default function EditIntegrationPage() {
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
           <Button variant="outlined" onClick={handleCancel}>
-            Cancel
+            Back to List
           </Button>
           <Button type="submit" variant="contained">
             Save Changes
