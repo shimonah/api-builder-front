@@ -1,9 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, CircularProgress } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
+  Paper, Typography, Box, CircularProgress, Button
+} from '@mui/material';
+import { fetchIntegrations, getMockIntegrations } from '../services/integrationService';
 
 export default function IntegrationsPage() {
+  const router = useRouter();
   const [integrations, setIntegrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,45 +18,29 @@ export default function IntegrationsPage() {
   useEffect(() => {
     setMounted(true);
     
-    const fetchIntegrations = async () => {
+    const loadIntegrations = async () => {
       try {
-        console.log('Attempting to fetch from API...');
-        const response = await fetch('http://127.0.0.1:3073/api/integration/list');
-        
-        if (!response.ok) {
-          console.error('Response not OK:', response.status, response.statusText);
-          throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-        
-        console.log('Fetch successful, parsing JSON...');
-        const data = await response.json();
-        console.log('Data received:', data);
+        const data = await fetchIntegrations();
         setIntegrations(data);
       } catch (err) {
-        console.error('Fetch error details:', err);
-        
-        // Use mock data if the fetch fails
-        const mockData = [
-          {
-            id: 1,
-            integrationCode: "mock",
-            name: "Payment Transaction Check Test",
-            active: true,
-            type: "rest",
-            updatedAt: "2025-04-01T10:00:00.000Z"
-          }
-        ];
-        
-        setIntegrations(mockData);
+        setIntegrations(getMockIntegrations());
       } finally {
         setLoading(false);
       }
     };
 
-    fetchIntegrations();
+    loadIntegrations();
   }, []);
 
-  // Don't render anything on the server
+  const handleRowClick = (integration) => {
+    router.push(`/integrations/${integration.id}`);
+  };
+
+  const handleEdit = (e, integration) => {
+    e.stopPropagation(); // Prevent row click from triggering
+    router.push(`/integrations/${integration.id}/edit`);
+  };
+
   if (!mounted) {
     return null;
   }
@@ -83,17 +73,34 @@ export default function IntegrationsPage() {
               <TableCell align="center">Active</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Updated At</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {integrations.map((integration) => (
-              <TableRow key={integration.id}>
+              <TableRow 
+                key={integration.id}
+                onClick={() => handleRowClick(integration)}
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' }
+                }}
+              >
                 <TableCell>{integration.integrationCode}</TableCell>
                 <TableCell>{integration.name}</TableCell>
                 <TableCell align="center">{integration.active ? 'Yes' : 'No'}</TableCell>
                 <TableCell>{integration.type}</TableCell>
                 <TableCell>
                   {new Date(integration.updatedAt).toISOString().split('T')[0]}
+                </TableCell>
+                <TableCell align="center">
+                  <Button 
+                    variant="contained" 
+                    size="small" 
+                    onClick={(e) => handleEdit(e, integration)}
+                  >
+                    Edit
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
