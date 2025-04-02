@@ -33,12 +33,6 @@ export default function Sidebar() {
       active: pathname === '/'
     },
     { 
-      text: 'Integrations', 
-      icon: <IntegrationInstructionsIcon />, 
-      path: '/integrations',
-      active: pathname.startsWith('/integrations')
-    },
-    { 
       text: 'Endpoints', 
       icon: <ApiIcon />, 
       path: '/endpoints',
@@ -55,6 +49,12 @@ export default function Sidebar() {
       icon: <RuleIcon />, 
       path: '/rules',
       active: pathname.startsWith('/rules')
+    },
+    { 
+      text: 'Integrations', 
+      icon: <IntegrationInstructionsIcon />, 
+      path: '/integrations',
+      active: pathname.startsWith('/integrations')
     },
     { 
       text: 'Test', 
