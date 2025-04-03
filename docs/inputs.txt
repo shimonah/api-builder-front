@@ -8,6 +8,8 @@ BASE URL: /inputs
    Description: Creates a new input schema
    Request Body:
      {
+       "code": "string", // Unique identifier for the input
+       "description": "string", // Optional description of the input
        "endpoint_id": number, // Optional - ID of the endpoint to associate with
        "method": "GET" | "POST" | "PUT" | "DELETE" | "PATCH", // HTTP method
        "schema": {
@@ -47,7 +49,19 @@ BASE URL: /inputs
      Status: 404 NOT FOUND
      Body: Error message if input not found
 
-4. GET INPUTS BY ENDPOINT ID
+4. GET INPUT BY CODE
+   Method: GET
+   URL: /inputs/code/:code
+   Description: Retrieves an input schema by its code
+   URL Parameters:
+     code: The code of the input to retrieve
+   Response:
+     Status: 200 OK
+     Body: The input object with its associated endpoints
+     Status: 404 NOT FOUND
+     Body: Error message if input not found
+
+5. GET INPUTS BY ENDPOINT ID
    Method: GET
    URL: /inputs/endpoint/:endpointId
    Description: Retrieves all input schemas associated with an endpoint
@@ -59,7 +73,7 @@ BASE URL: /inputs
      Status: 404 NOT FOUND
      Body: Error message if endpoint not found
 
-5. UPDATE INPUT
+6. UPDATE INPUT
    Method: PUT
    URL: /inputs/:id
    Description: Updates an input schema by its ID
@@ -67,6 +81,8 @@ BASE URL: /inputs
      id: The ID of the input to update
    Request Body:
      {
+       "code": "string", // Optional
+       "description": "string", // Optional
        "endpoint_id": number, // Optional - ID of the endpoint to associate with
        "method": "GET" | "POST" | "PUT" | "DELETE" | "PATCH", // Optional
        "schema": { // Optional
@@ -82,7 +98,7 @@ BASE URL: /inputs
      Status: 404 NOT FOUND
      Body: Error message if input not found
 
-6. DELETE INPUT
+7. DELETE INPUT
    Method: DELETE
    URL: /inputs/:id
    Description: Deletes an input schema by its ID
