@@ -1,0 +1,176 @@
+CONNECTIONS API DOCUMENTATION
+
+BASE URL: /connections
+
+1. CREATE CONNECTION
+   Method: POST
+   URL: /connections
+   Description: Creates a new connection record
+   Request Body:
+     {
+       "endpoint_id": number, // ID of the endpoint
+       "integration_id": number, // Optional - ID of the integration
+       "status": string, // Status of the connection (success, failed, error)
+       "duration_ms": number, // Optional - Duration in milliseconds
+       "incoming_data": {}, // Optional - The data received
+       "rule_execution": { // Optional - Details about rule execution
+         "rule_id": number,
+         "matched_condition": {
+           "operator": string,
+           "value": any,
+           "matched_value": any
+         },
+         "used_default": boolean,
+         "selected_integration_code": string
+       },
+       "integration_request": { // Optional - Details about the integration request
+         "method": string,
+         "url": string,
+         "headers": {},
+         "body": {}
+       },
+       "integration_response": { // Optional - Details about the integration response
+         "status": number,
+         "headers": {},
+         "body": {},
+         "duration_ms": number
+       },
+       "validation_result": { // Optional - Details about validation
+         "success": boolean,
+         "conditions_results": [
+           {
+             "path": string,
+             "operator": string,
+             "expected_value": any,
+             "actual_value": any,
+             "result": boolean
+           }
+         ],
+         "error": string
+       },
+       "client_response": { // Optional - Details about the client response
+         "status": number,
+         "body": {}
+       },
+       "error_message": string // Optional - Error message if any
+     }
+   Response: 
+     Status: 201 CREATED
+     Body: The created connection object
+
+2. GET ALL CONNECTIONS
+   Method: GET
+   URL: /connections
+   Description: Retrieves all connections with pagination
+   Query Parameters:
+     limit: Optional - Number of records to return (default: 100)
+     offset: Optional - Number of records to skip (default: 0)
+   Response:
+     Status: 200 OK
+     Body: {
+       "data": Array of connection objects,
+       "total": Total number of connections
+     }
+
+3. GET CONNECTION STATISTICS
+   Method: GET
+   URL: /connections/stats
+   Description: Retrieves statistics about connections
+   Response:
+     Status: 200 OK
+     Body: {
+       "totalCount": number,
+       "successCount": number,
+       "failedCount": number,
+       "errorCount": number,
+       "successRate": number,
+       "avgDuration": number
+     }
+
+4. GET CONNECTION BY ID
+   Method: GET
+   URL: /connections/:id
+   Description: Retrieves a connection by its ID
+   URL Parameters:
+     id: The ID of the connection to retrieve
+   Response:
+     Status: 200 OK
+     Body: The connection object with endpoint and integration relations
+     Status: 404 NOT FOUND
+     Body: Error message if connection not found
+
+5. GET CONNECTIONS BY ENDPOINT ID
+   Method: GET
+   URL: /connections/endpoint/:endpointId
+   Description: Retrieves connections associated with an endpoint
+   URL Parameters:
+     endpointId: The ID of the endpoint
+   Query Parameters:
+     limit: Optional - Number of records to return (default: 100)
+     offset: Optional - Number of records to skip (default: 0)
+   Response:
+     Status: 200 OK
+     Body: {
+       "data": Array of connection objects,
+       "total": Total number of connections for this endpoint
+     }
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found
+
+6. GET CONNECTIONS BY INTEGRATION ID
+   Method: GET
+   URL: /connections/integration/:integrationId
+   Description: Retrieves connections associated with an integration
+   URL Parameters:
+     integrationId: The ID of the integration
+   Query Parameters:
+     limit: Optional - Number of records to return (default: 100)
+     offset: Optional - Number of records to skip (default: 0)
+   Response:
+     Status: 200 OK
+     Body: {
+       "data": Array of connection objects,
+       "total": Total number of connections for this integration
+     }
+     Status: 404 NOT FOUND
+     Body: Error message if integration not found
+
+7. GET CONNECTIONS BY STATUS
+   Method: GET
+   URL: /connections/status/:status
+   Description: Retrieves connections with a specific status
+   URL Parameters:
+     status: The status to filter by (success, failed, error)
+   Query Parameters:
+     limit: Optional - Number of records to return (default: 100)
+     offset: Optional - Number of records to skip (default: 0)
+   Response:
+     Status: 200 OK
+     Body: {
+       "data": Array of connection objects,
+       "total": Total number of connections with this status
+     }
+
+8. UPDATE CONNECTION
+   Method: PUT
+   URL: /connections/:id
+   Description: Updates a connection by its ID
+   URL Parameters:
+     id: The ID of the connection to update
+   Request Body: Same structure as create connection, all fields optional
+   Response:
+     Status: 200 OK
+     Body: The updated connection object
+     Status: 404 NOT FOUND
+     Body: Error message if connection not found
+
+9. DELETE CONNECTION
+   Method: DELETE
+   URL: /connections/:id
+   Description: Deletes a connection by its ID
+   URL Parameters:
+     id: The ID of the connection to delete
+   Response:
+     Status: 204 NO CONTENT
+     Status: 404 NOT FOUND
+     Body: Error message if connection not found 

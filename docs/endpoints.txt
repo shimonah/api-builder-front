@@ -1,0 +1,71 @@
+ENDPOINTS API DOCUMENTATION
+
+BASE URL: /endpoints
+
+1. CREATE ENDPOINT
+   Method: POST
+   URL: /endpoints
+   Description: Creates a new endpoint
+   Request Body:
+     {
+       "endpoint_code": "string", // Unique identifier for the endpoint
+       "url_path": "string", // URL path for the endpoint
+       "name": "string", // Name of the endpoint
+       "description": "string", // Optional description
+       "version": "string", // Version of the endpoint
+       "active": boolean // Optional, defaults to true
+     }
+   Response: 
+     Status: 201 CREATED
+     Body: The created endpoint object
+
+2. GET ALL ENDPOINTS
+   Method: GET
+   URL: /endpoints
+   Description: Retrieves all endpoints
+   Response:
+     Status: 200 OK
+     Body: Array of endpoint objects
+
+3. GET ENDPOINT BY CODE
+   Method: GET
+   URL: /endpoints/:code
+   Description: Retrieves an endpoint by its code
+   URL Parameters:
+     code: The endpoint_code of the endpoint to retrieve
+   Response:
+     Status: 200 OK
+     Body: The endpoint object
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found
+
+4. UPDATE ENDPOINT
+   Method: PUT
+   URL: /endpoints/:code
+   Description: Updates an endpoint by its code
+   URL Parameters:
+     code: The endpoint_code of the endpoint to update
+   Request Body:
+     {
+       "url_path": "string", // Optional
+       "name": "string", // Optional
+       "description": "string", // Optional
+       "version": "string", // Optional
+       "active": boolean // Optional
+     }
+   Response:
+     Status: 200 OK
+     Body: The updated endpoint object
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found
+
+5. DELETE ENDPOINT
+   Method: DELETE
+   URL: /endpoints/:code
+   Description: Deletes an endpoint by its code
+   URL Parameters:
+     code: The endpoint_code of the endpoint to delete
+   Response:
+     Status: 204 NO CONTENT
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found 

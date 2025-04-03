@@ -1,0 +1,77 @@
+RULES API DOCUMENTATION
+
+Note: Based on the provided code, I don't have complete information about the Rules API implementation. The following documentation is inferred from the entity relationships and module structure.
+
+BASE URL: /rules
+
+1. CREATE RULE
+   Method: POST
+   URL: /rules
+   Description: Creates a new rule
+   Request Body:
+     {
+       // Rule properties would be defined here
+       // Likely includes conditions and actions
+     }
+   Response: 
+     Status: 201 CREATED
+     Body: The created rule object
+
+2. GET ALL RULES
+   Method: GET
+   URL: /rules
+   Description: Retrieves all rules
+   Response:
+     Status: 200 OK
+     Body: Array of rule objects
+
+3. GET RULE BY ID
+   Method: GET
+   URL: /rules/:id
+   Description: Retrieves a rule by its ID
+   URL Parameters:
+     id: The ID of the rule to retrieve
+   Response:
+     Status: 200 OK
+     Body: The rule object
+     Status: 404 NOT FOUND
+     Body: Error message if rule not found
+
+4. GET RULES BY ENDPOINT ID
+   Method: GET
+   URL: /rules/endpoint/:endpointId
+   Description: Retrieves all rules associated with an endpoint
+   URL Parameters:
+     endpointId: The ID of the endpoint
+   Response:
+     Status: 200 OK
+     Body: Array of rule objects associated with the endpoint
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found
+
+5. UPDATE RULE
+   Method: PUT
+   URL: /rules/:id
+   Description: Updates a rule by its ID
+   URL Parameters:
+     id: The ID of the rule to update
+   Request Body:
+     {
+       // Rule properties to update
+     }
+   Response:
+     Status: 200 OK
+     Body: The updated rule object
+     Status: 404 NOT FOUND
+     Body: Error message if rule not found
+
+6. DELETE RULE
+   Method: DELETE
+   URL: /rules/:id
+   Description: Deletes a rule by its ID
+   URL Parameters:
+     id: The ID of the rule to delete
+   Response:
+     Status: 204 NO CONTENT
+     Status: 404 NOT FOUND
+     Body: Error message if rule not found 

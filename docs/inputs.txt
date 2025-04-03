@@ -1,0 +1,94 @@
+INPUTS API DOCUMENTATION
+
+BASE URL: /inputs
+
+1. CREATE INPUT
+   Method: POST
+   URL: /inputs
+   Description: Creates a new input schema
+   Request Body:
+     {
+       "endpoint_id": number, // Optional - ID of the endpoint to associate with
+       "method": "GET" | "POST" | "PUT" | "DELETE" | "PATCH", // HTTP method
+       "schema": {
+         "type": "string", // Usually "object"
+         "properties": {
+           "propertyName": {
+             "type": "string", // Data type (string, number, boolean, etc.)
+             "description": "string", // Optional description
+             "required": boolean, // Optional, whether field is required
+             // Additional schema properties as needed
+           }
+           // Additional properties as needed
+         }
+       }
+     }
+   Response: 
+     Status: 201 CREATED
+     Body: The created input object
+
+2. GET ALL INPUTS
+   Method: GET
+   URL: /inputs
+   Description: Retrieves all input schemas
+   Response:
+     Status: 200 OK
+     Body: Array of input objects with their associated endpoints
+
+3. GET INPUT BY ID
+   Method: GET
+   URL: /inputs/:id
+   Description: Retrieves an input schema by its ID
+   URL Parameters:
+     id: The ID of the input to retrieve
+   Response:
+     Status: 200 OK
+     Body: The input object with its associated endpoints
+     Status: 404 NOT FOUND
+     Body: Error message if input not found
+
+4. GET INPUTS BY ENDPOINT ID
+   Method: GET
+   URL: /inputs/endpoint/:endpointId
+   Description: Retrieves all input schemas associated with an endpoint
+   URL Parameters:
+     endpointId: The ID of the endpoint
+   Response:
+     Status: 200 OK
+     Body: Array of input objects associated with the endpoint
+     Status: 404 NOT FOUND
+     Body: Error message if endpoint not found
+
+5. UPDATE INPUT
+   Method: PUT
+   URL: /inputs/:id
+   Description: Updates an input schema by its ID
+   URL Parameters:
+     id: The ID of the input to update
+   Request Body:
+     {
+       "endpoint_id": number, // Optional - ID of the endpoint to associate with
+       "method": "GET" | "POST" | "PUT" | "DELETE" | "PATCH", // Optional
+       "schema": { // Optional
+         "type": "string",
+         "properties": {
+           // Schema properties
+         }
+       }
+     }
+   Response:
+     Status: 200 OK
+     Body: The updated input object
+     Status: 404 NOT FOUND
+     Body: Error message if input not found
+
+6. DELETE INPUT
+   Method: DELETE
+   URL: /inputs/:id
+   Description: Deletes an input schema by its ID
+   URL Parameters:
+     id: The ID of the input to delete
+   Response:
+     Status: 204 NO CONTENT
+     Status: 404 NOT FOUND
+     Body: Error message if input not found 

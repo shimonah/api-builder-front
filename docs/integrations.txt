@@ -1,0 +1,42 @@
+INTEGRATIONS API DOCUMENTATION
+
+BASE URL: /integrations
+
+1. CREATE INTEGRATION
+   Method: POST
+   URL: /integration/create
+   Description: Creates a new integration
+   Request Body:
+     {
+       "integrationCode": "string", // Unique identifier for the integration
+       "name": "string", // Name of the integration
+       "description": "string", // Optional description
+       "version": "string", // Version of the integration
+       "active": boolean, // Optional, defaults to true
+       "type": "string", // Type of integration
+       "request": {}, // JSON object describing the request format
+       "response": {} // JSON object describing the response format
+     }
+   Response: 
+     Status: 201 CREATED
+     Body: The created integration object
+
+2. GET ALL INTEGRATIONS
+   Method: GET
+   URL: /integration/list
+   Description: Retrieves all integrations
+   Response:
+     Status: 200 OK
+     Body: Array of integration objects
+
+3. GET INTEGRATION BY CODE
+   Method: GET
+   URL: /integration/:integrationCode
+   Description: Retrieves an integration by its code
+   URL Parameters:
+     integrationCode: The integrationCode of the integration to retrieve
+   Response:
+     Status: 200 OK
+     Body: The integration object
+     Status: 404 NOT FOUND
+     Body: Error message if integration not found 

@@ -13,7 +13,7 @@ export default function Home() {
       <Typography variant="h4" gutterBottom>Welcome to Integration Hub</Typography>
       
       <Grid container spacing={3} sx={{ mt: 2 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} component="div">
           <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <IntegrationInstructionsIcon sx={{ mr: 1 }} fontSize="large" color="primary" />
@@ -34,7 +34,7 @@ export default function Home() {
           </Paper>
         </Grid>
         
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} component="div">
           <Paper sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <ApiIcon sx={{ mr: 1 }} fontSize="large" color="primary" />
