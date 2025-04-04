@@ -1,0 +1,152 @@
+{
+    "name": "Payment Provider Rule",
+    "description": "Assign payment validation requests to the appropriate provider integration",
+    "version": "1.0",
+    "active": true,
+    "rules": [
+      {
+        "name": "PayPal Standard Processing",
+        "description": "Route PayPal payments to standard verification endpoint",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "order.payment.method",
+            "property_type": "body_json",
+            "operator": "equals",
+            "value": "paypal",
+            "transform": "lowercase"
+          }
+        ],
+        "integration_code": "paypal_transaction_verify",
+        "priority": 100
+      },
+      {
+        "name": "PayPal High-Value Transaction",
+        "description": "Route high-value PayPal payments to enhanced verification",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "order.payment.method",
+            "property_type": "body_json",
+            "operator": "equals",
+            "value": "paypal",
+            "transform": "lowercase"
+          },
+          {
+            "property_path": "order.total",
+            "property_type": "body_json",
+            "operator": "greater_than",
+            "value": 1000
+          }
+        ],
+        "integration_code": "paypal_enhanced_verify",
+        "priority": 200
+      },
+      {
+        "name": "Stripe Processing",
+        "description": "Route Stripe payments to Stripe verification endpoint",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "order.payment.method",
+            "property_type": "body_json",
+            "operator": "equals",
+            "value": "stripe"
+          }
+        ],
+        "integration_code": "stripe_payment_check",
+        "priority": 100
+      },
+      {
+        "name": "Adyen From URL Parameter",
+        "description": "Route Adyen payments based on URL parameter",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "payment_provider",
+            "property_type": "url_parameter",
+            "operator": "equals",
+            "value": "adyen"
+          }
+        ],
+        "integration_code": "adyen_payment_verify",
+        "priority": 100
+      },
+      {
+        "name": "Apple Pay Header Detection",
+        "description": "Route Apple Pay based on specific header value",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "X-Payment-Method",
+            "property_type": "header",
+            "operator": "equals",
+            "value": "apple_pay"
+          }
+        ],
+        "integration_code": "apple_pay_verify",
+        "priority": 150
+      },
+      {
+        "name": "European Payment Processing",
+        "description": "Route European region payments to regional processor",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "customer.region",
+            "property_type": "body_json",
+            "operator": "in",
+            "value": ["EU", "UK", "EFTA"]
+          },
+          {
+            "property_path": "order.currency",
+            "property_type": "body_json",
+            "operator": "in",
+            "value": ["EUR", "GBP", "CHF"]
+          },
+          {
+            "property_path": "payment_method",
+            "property_type": "body_json",
+            "operator": "not_equals",
+            "value": "paypal"
+          }
+        ],
+        "integration_code": "european_payment_processor",
+        "priority": 120
+      },
+      {
+        "name": "Regex Payment Reference Check",
+        "description": "Route payments with specific reference format",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "order.reference_code",
+            "property_type": "body_json",
+            "operator": "matches_regex",
+            "value": "^[A-Z]{2}-\\d{6}-[A-Z]{3}$"
+          }
+        ],
+        "integration_code": "reference_code_verification",
+        "priority": 90
+      },
+      {
+        "name": "Webhook Payload Processing",
+        "description": "Process raw webhook data from payment providers",
+        "logical_operator": "AND",
+        "conditions": [
+          {
+            "property_path": "event_type",
+            "property_type": "body_text",
+            "operator": "contains",
+            "value": "payment.success"
+          }
+        ],
+        "integration_code": "webhook_payment_processor",
+        "priority": 100
+      }
+    ],
+    "default": {
+      "integration_code": "generic_payment_check",
+      "priority": 50
+    }
+  }
