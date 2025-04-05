@@ -1,0 +1,47 @@
+{
+    "name": "Payment Provider Rule",
+    "description": "Assign payment validation requests to the appropriate provider integration",
+    "version": "1.0",
+    "active": true,
+    "rules": [
+        {
+            "name": "PayPal Standard Processing",
+            "description": "Route PayPal payments to standard verification endpoint",
+            "logical_operator": "AND",
+            "conditions": [
+                {
+                    "property_path": "order.payment.method",
+                    "property_type": "body_json",
+                    "operator": "equals",
+                    "value": "paypal",
+                    "transform": "lowercase"
+                }       
+            ],
+            "integration_code": "paypal_transaction_verify",
+            "priority": 100
+        },
+        {
+            "name": "PayPal High-Value Transaction",
+            "description": "Route high-value PayPal payments to enhanced verification",
+            "logical_operator": "AND",
+            "conditions": [
+                {
+                    "property_path": "order.payment.method",
+                    "property_type": "body_json",
+                    "operator": "equals",
+                    "value": "paypal",
+                    "transform": "lowercase"
+                },
+                {
+                    "property_path": "order.total",
+                    "property_type": "body_json",
+                    "operator": "greater_than",
+                    "value": 1000,
+                    "transform": "number"
+                }
+            ],
+            "integration_code": "paypal_enhanced_verify",
+            "priority": 200
+        }
+    ]
+}

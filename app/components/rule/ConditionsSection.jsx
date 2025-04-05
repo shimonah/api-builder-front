@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function ConditionsSection({ 
-  formData, 
+  conditions, 
   handleConditionChange, 
   handleAddCondition, 
   handleRemoveCondition, 
@@ -49,14 +49,14 @@ export default function ConditionsSection({
         </Button>
       </Box>
       
-      {formData.conditions.map((condition, index) => (
+      {conditions.map((condition, index) => (
         <Box key={index} sx={{ mb: 3, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="subtitle1">Condition {index + 1}</Typography>
             <IconButton 
               color="error" 
               onClick={() => handleRemoveCondition(index)}
-              disabled={formData.conditions.length === 1}
+              disabled={conditions.length === 1}
             >
               <DeleteIcon />
             </IconButton>
@@ -69,8 +69,8 @@ export default function ConditionsSection({
               onChange={(e) => handleConditionChange(index, 'property_path', e.target.value)}
               fullWidth
               required
-              error={errors.conditions?.[index]?.property_path}
-              helperText={errors.conditions?.[index]?.property_path || 'e.g., order.payment.method'}
+              error={errors?.[index]?.property_path}
+              helperText={errors?.[index]?.property_path || 'e.g., order.payment.method'}
             />
             
             <FormControl fullWidth>
@@ -107,9 +107,9 @@ export default function ConditionsSection({
               onChange={(e) => handleConditionChange(index, 'value', e.target.value)}
               fullWidth
               required
-              error={errors.conditions?.[index]?.value}
+              error={errors?.[index]?.value}
               helperText={
-                errors.conditions?.[index]?.value || 
+                errors?.[index]?.value || 
                 (condition.operator === 'in' ? 'For "in" operator, use JSON array format: ["value1", "value2"]' : '')
               }
             />
@@ -136,8 +136,8 @@ export default function ConditionsSection({
             onChange={(e) => handleConditionChange(index, 'integration_code', e.target.value)}
             fullWidth
             required
-            error={errors.conditions?.[index]?.integration_code}
-            helperText={errors.conditions?.[index]?.integration_code || 'The integration to route to when this condition matches'}
+            error={errors?.[index]?.integration_code}
+            helperText={errors?.[index]?.integration_code || 'The integration to route to when this condition matches'}
           />
         </Box>
       ))}

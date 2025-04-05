@@ -1,5 +1,7 @@
 // Mock rule service for demonstration purposes
 
+const API_BASE_URL = 'http://localhost:3073';
+
 export const fetchRules = async () => {
   // In a real application, this would be an API call
   return new Promise((resolve) => {
@@ -26,6 +28,27 @@ export const fetchRuleById = async (id) => {
 };
 
 export const createRule = async (ruleData) => {
+  console.log('ruleData', ruleData);
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/rule`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ruleData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error creating rule: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating rule:', error);
+    throw error;
+  }
+  
+
   // In a real application, this would be an API call
   return new Promise((resolve) => {
     setTimeout(() => {
