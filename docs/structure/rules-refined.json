@@ -10,15 +10,14 @@
             "logical_operator": "AND",
             "conditions": [
                 {
-                    "property_path": "order.payment.method",
+                    "property_value": "order.payment.method",
                     "property_type": "body_json",
                     "operator": "equals",
                     "value": "paypal",
                     "transform": "lowercase"
                 }       
             ],
-            "integration_code": "paypal_transaction_verify",
-            "priority": 100
+            "integration_code": "paypal_transaction_verify"
         },
         {
             "name": "PayPal High-Value Transaction",
@@ -26,22 +25,24 @@
             "logical_operator": "AND",
             "conditions": [
                 {
-                    "property_path": "order.payment.method",
+                    "property_value": "order.payment.method",
                     "property_type": "body_json",
                     "operator": "equals",
                     "value": "paypal",
                     "transform": "lowercase"
                 },
                 {
-                    "property_path": "order.total",
+                    "property_value": "order.total",
                     "property_type": "body_json",
                     "operator": "greater_than",
                     "value": 1000,
                     "transform": "number"
                 }
             ],
-            "integration_code": "paypal_enhanced_verify",
-            "priority": 200
+            "integration_code": "paypal_enhanced_verify"
         }
-    ]
+    ],
+    "default": {
+      "integration_code": "generic_payment_check"
+    }
 }

@@ -3,82 +3,87 @@
 const API_BASE_URL = 'http://localhost:3073';
 
 export const fetchRules = async () => {
-  // In a real application, this would be an API call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(getMockRules());
-    }, 500);
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/rules`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to fetch rules:', error);
+    // Return an empty array as fallback
+    return [];
+  }
 };
 
 export const fetchRuleById = async (id) => {
-  // In a real application, this would be an API call
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const rules = getMockRules();
-      const rule = rules.find(r => r.id.toString() === id.toString());
-      
-      if (rule) {
-        resolve(rule);
-      } else {
-        reject(new Error('Rule not found'));
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/rules/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       }
-    }, 500);
-  });
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch rule with ID ${id}:`, error);
+    throw error;
+  }
 };
 
-export const createRule = async (ruleData) => {
-  console.log('ruleData', ruleData);
+export async function createRule(ruleData) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/rule`, {
+
+    const response = await fetch(`${API_BASE_URL}/api/rules`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(ruleData),
     });
-
+    
     if (!response.ok) {
-      throw new Error(`Error creating rule: ${response.status}`);
+      throw new Error(`Error: ${response.status}`);
     }
-
+    
     return await response.json();
   } catch (error) {
-    console.error('Error creating rule:', error);
+    console.error('Failed to create rule:', error);
     throw error;
   }
-  
-
-  // In a real application, this would be an API call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simulate creating a rule and returning it with an ID
-      const newRule = {
-        ...ruleData,
-        id: Math.floor(Math.random() * 10000).toString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      resolve(newRule);
-    }, 1000);
-  });
-};
+}
 
 export const updateRule = async (id, ruleData) => {
-  // In a real application, this would be an API call
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Simulate updating a rule
-      const updatedRule = {
-        ...ruleData,
-        id,
-        updatedAt: new Date().toISOString()
-      };
-      
-      resolve(updatedRule);
-    }, 1000);
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/rules/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ruleData),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to update rule with ID ${id}:`, error);
+    throw error;
+  }
 };
 
 export const deleteRule = async (id) => {
@@ -92,6 +97,7 @@ export const deleteRule = async (id) => {
 };
 
 export const getMockRules = () => {
+  return [];
   return [
     {
       id: '1',
