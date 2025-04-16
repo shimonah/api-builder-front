@@ -1,109 +1,66 @@
+import BaseService from './BaseService';
+
 /**
- * Service for handling input schema API requests
+ * Service for handling input-related API requests
  */
+class InputService extends BaseService {
+  constructor() {
+    super('/api/inputs');
+  }
 
-const API_BASE_URL = 'http://localhost:3073';
+  /**
+   * Fetch all inputs
+   * @returns {Promise<Array>} List of inputs
+   */
+  async fetchInputs() {
+    return this.get();
+  }
 
-export async function fetchInputs() {
-  try {
-    const response = await fetch(`http://localhost:3073/api/inputs`);
-    
-    if (!response.ok) {
-      throw new Error(`Error fetching inputs: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to fetch inputs:', error);
-    throw error;
+  /**
+   * Fetch a single input by ID
+   * @param {string} id - Input ID
+   * @returns {Promise<Object>} Input details
+   */
+  async fetchInputById(id) {
+    return this.get(`/${id}`);
+  }
+
+  /**
+   * Create a new input
+   * @param {Object} inputData - Input data
+   * @returns {Promise<Object>} Created input
+   */
+  async createInput(inputData) {
+    return this.post('', inputData);
+  }
+
+  /**
+   * Update an existing input
+   * @param {string} id - Input ID
+   * @param {Object} inputData - Updated input data
+   * @returns {Promise<Object>} Updated input
+   */
+  async updateInput(id, inputData) {
+    return this.put(`/${id}`, inputData);
+  }
+
+  /**
+   * Delete an input
+   * @param {string} id - Input ID
+   * @returns {Promise<Object>} Deletion result
+   */
+  async deleteInput(id) {
+    return this.delete(`/${id}`);
   }
 }
 
-export async function fetchInputById(id) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/inputs/${id}`);
-    
-    if (!response.ok) {
-      throw new Error(`Error fetching input: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error(`Failed to fetch input with ID ${id}:`, error);
-    throw error;
-  }
-}
+// Create and export a singleton instance
+const inputService = new InputService();
+export default inputService;
 
-export async function fetchInputsByEndpoint(endpointId) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/inputs/endpoint/${endpointId}`);
-    
-    if (!response.ok) {
-      throw new Error(`Error fetching inputs for endpoint: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error(`Failed to fetch inputs for endpoint ${endpointId}:`, error);
-    throw error;
-  }
-}
-
-export async function createInput(inputData) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/inputs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(inputData),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Error creating input: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to create input:', error);
-    throw error;
-  }
-}
-
-export async function updateInput(id, inputData) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/inputs/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(inputData),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Error updating input: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error(`Failed to update input with ID ${id}:`, error);
-    throw error;
-  }
-}
-
-export async function deleteInput(id) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/inputs/${id}`, {
-      method: 'DELETE',
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Error deleting input: ${response.status}`);
-    }
-    
-    return true;
-  } catch (error) {
-    console.error(`Failed to delete input with ID ${id}:`, error);
-    throw error;
-  }
-} 
+// For backward compatibility with existing code
+export const fetchInputs = () => inputService.fetchInputs();
+export const fetchInputById = (id) => inputService.fetchInputById(id);
+export const createInput = (data) => inputService.createInput(data);
+export const updateInput = (id, data) => inputService.updateInput(id, data);
+export const deleteInput = (id) => inputService.deleteInput(id); 

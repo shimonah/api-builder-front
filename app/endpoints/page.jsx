@@ -8,7 +8,7 @@ import {
   Chip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { fetchEndpoints, getMockEndpoints } from '../services/endpointService';
+import { fetchEndpoints } from '../services/endpointService';
 
 export default function EndpointsPage() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function EndpointsPage() {
       } catch (err) {
         console.error('Error fetching endpoints:', err);
         // Fallback to mock data if API fails
-        setEndpoints(getMockEndpoints());
+        setEndpoints([]);
       } finally {
         setLoading(false);
       }

@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
   Paper, Typography, Box, CircularProgress, Button
 } from '@mui/material';
-import { fetchIntegrations, getMockIntegrations } from '../services/integrationService';
+import { fetchIntegrations } from '../services/integrationService';
 
 export default function IntegrationsPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function IntegrationsPage() {
         const data = await fetchIntegrations();
         setIntegrations(data);
       } catch (err) {
-        setIntegrations(getMockIntegrations());
+        setIntegrations([]);
       } finally {
         setLoading(false);
       }
