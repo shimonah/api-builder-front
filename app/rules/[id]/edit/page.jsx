@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
-  Box, Typography, Paper, Button, TextField, FormControlLabel,
+  Box, Typography, Paper, Button, Snackbar, TextField, FormControlLabel,
   Switch, IconButton, MenuItem, Select, FormControl,
   InputLabel, Grid, Card, CardContent, Alert, CircularProgress
 } from '@mui/material';
@@ -21,6 +21,12 @@ export default function EditRulePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
   
   const [rule, setRule] = useState({
     name: '',
@@ -53,7 +59,6 @@ export default function EditRulePage() {
           logical_operator: data.logical_operator,
           conditions: data.conditions || [],
           integration_code: data.integration_code,
-          priority: data.priority
         });
       } catch (err) {
         console.error('Error loading rule:', err);
@@ -103,10 +108,8 @@ export default function EditRulePage() {
   };
 
   const removeCondition = (index) => {
-    if (rule.conditions.length > 1) {
-      const updatedConditions = rule.conditions.filter((_, i) => i !== index);
-      setRule({ ...rule, conditions: updatedConditions });
-    }
+    const updatedConditions = rule.conditions.filter((_, i) => i !== index);
+    setRule({ ...rule, conditions: updatedConditions });
   };
 
   const handleCancel = () => {
@@ -119,16 +122,24 @@ export default function EditRulePage() {
     setError(null);
 
     try {
-      // Call the updateRule service function
       await updateRule(ruleId, rule);
       
-      router.push('/rules');
+      setNotification({
+        open: true,
+        message: 'Integration updated successfully!',
+        severity: 'success'
+      });
+
     } catch (err) {
       console.error('Error updating rule:', err);
       setError('Failed to update rule. Please try again.');
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCloseNotification = () => {
+    setNotification(prev => ({ ...prev, open: false }));
   };
 
   const propertyTypes = [
@@ -252,19 +263,6 @@ export default function EditRulePage() {
               </Select>
             </FormControl>
           </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              type="number"
-              label="Priority"
-              name="priority"
-              value={rule.priority || ''}
-              onChange={handleInputChange}
-              margin="normal"
-              helperText="Higher priority rules are evaluated first"
-            />
-          </Grid>
         </Grid>
       </Paper>
 
@@ -286,7 +284,6 @@ export default function EditRulePage() {
               <IconButton 
                 sx={{ position: 'absolute', top: 8, right: 8 }}
                 onClick={() => removeCondition(index)}
-                disabled={rule.conditions.length <= 1}
               >
                 <DeleteIcon />
               </IconButton>
@@ -385,6 +382,21 @@ export default function EditRulePage() {
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
       </Box>
+
+      <Snackbar 
+        open={notification.open} 
+        autoHideDuration={6000} 
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseNotification} 
+          severity={notification.severity}
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 } 

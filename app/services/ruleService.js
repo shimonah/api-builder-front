@@ -41,7 +41,9 @@ class RuleService extends BaseService {
    * @returns {Promise<Object>} Updated rule
    */
   async updateRule(id, ruleData) {
-    return this.put(`/${id}`, ruleData);
+    let data = ruleData;
+    delete data.id;
+    return this.put(`/${id}`, data);
   }
 
   /**
