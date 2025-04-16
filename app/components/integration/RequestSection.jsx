@@ -19,6 +19,8 @@ export default function RequestSection({
   expanded, 
   handleAccordionChange 
 }) {
+  const isPostMethod = formData.request.method === 'POST';
+
   return (
     <Accordion 
       expanded={expanded === 'request'} 
@@ -31,8 +33,10 @@ export default function RequestSection({
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel>Method</InputLabel>
+              <InputLabel id="request-method-label">Method</InputLabel>
               <Select
+                labelId="request-method-label"
+                id="request-method"
                 value={formData.request.method}
                 label="Method"
                 onChange={(e) => handleNestedChange('request', null, 'method', e.target.value)}
@@ -52,6 +56,7 @@ export default function RequestSection({
               onChange={(e) => handleNestedChange('request', null, 'baseUrl', e.target.value)}
               fullWidth
               required
+              placeholder="https://api.example.com"
             />
           </Grid>
           <Grid item xs={12}>
@@ -60,8 +65,64 @@ export default function RequestSection({
               value={formData.request.path}
               onChange={(e) => handleNestedChange('request', null, 'path', e.target.value)}
               fullWidth
-              required
+              placeholder="/v1/resource/{id}"
+              helperText="Use {paramName} for path parameters"
             />
+          </Grid>
+
+          {/* Body field for POST requests */}
+          {isPostMethod && (
+            <Grid item xs={12}>
+              <TextField
+                label="Request Body"
+                value={formData.request.body || ''}
+                onChange={(e) => handleNestedChange('request', null, 'body', e.target.value)}
+                fullWidth
+                multiline
+                rows={5}
+                placeholder='{"key": "value"}'
+                helperText="Enter JSON request body"
+              />
+            </Grid>
+          )}
+          
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="subtitle1">Headers</Typography>
+              <Button 
+                startIcon={<AddIcon />} 
+                onClick={handleAddHeader}
+                size="small"
+              >
+                Add Header
+              </Button>
+            </Box>
+            {formData.request.headers.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">No headers defined</Typography>
+            ) : (
+              formData.request.headers.map((header, index) => (
+                <Box key={index} sx={{ display: 'flex', mb: 2 }}>
+                  <TextField
+                    label="Key"
+                    value={header.key}
+                    onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
+                    sx={{ mr: 2, flex: 1 }}
+                  />
+                  <TextField
+                    label="Value"
+                    value={header.value}
+                    onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
+                    sx={{ mr: 2, flex: 1 }}
+                  />
+                  <IconButton 
+                    color="error" 
+                    onClick={() => handleRemoveHeader(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              ))
+            )}
           </Grid>
 
           <Grid item xs={12}>
@@ -95,45 +156,6 @@ export default function RequestSection({
                   <IconButton 
                     color="error" 
                     onClick={() => handleRemovePathParam(index)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              ))
-            )}
-          </Grid>
-
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="subtitle1">Headers</Typography>
-              <Button 
-                startIcon={<AddIcon />} 
-                onClick={handleAddHeader}
-                size="small"
-              >
-                Add Header
-              </Button>
-            </Box>
-            {formData.request.headers.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">No headers defined</Typography>
-            ) : (
-              formData.request.headers.map((header, index) => (
-                <Box key={index} sx={{ display: 'flex', mb: 2 }}>
-                  <TextField
-                    label="Key"
-                    value={header.key}
-                    onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
-                    sx={{ mr: 2, flex: 1 }}
-                  />
-                  <TextField
-                    label="Value"
-                    value={header.value}
-                    onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
-                    sx={{ mr: 2, flex: 1 }}
-                  />
-                  <IconButton 
-                    color="error" 
-                    onClick={() => handleRemoveHeader(index)}
                   >
                     <DeleteIcon />
                   </IconButton>

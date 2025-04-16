@@ -91,18 +91,18 @@ class IntegrationService extends BaseService {
   async updateIntegration(id, integrationData) {
     try {
 
-      
-      delete integrationData.integrationCode;
-      delete integrationData.createdAt;
-      delete integrationData.updatedAt;
-      delete integrationData.id;
+      let data = integrationData;
+      delete data.integrationCode;
+      delete data.createdAt;
+      delete data.updatedAt;
+      delete data.id;
       
       const response = await fetch(`${config.api.baseUrl}/api/integrations/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(integrationData),
+        body: JSON.stringify(data),
       });
       
       if (!response.ok) {

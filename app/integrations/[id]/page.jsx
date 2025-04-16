@@ -156,6 +156,17 @@ export default function IntegrationDetailsPage({ params }) {
             </Typography>
           </Grid>
           
+          {integration.request?.method === 'POST' && (
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" color="text.secondary">Request Body</Typography>
+              <Paper sx={{ p: 2, bgcolor: 'background.paper', overflowX: 'auto' }}>
+                <pre style={{ margin: 0 }}>
+                  {integration.request?.body || 'No body specified'}
+                </pre>
+              </Paper>
+            </Grid>
+          )}
+          
           <Grid item xs={12} md={6}>
             <Typography variant="subtitle1" color="text.secondary">Headers</Typography>
             {integration.request?.headers && integration.request.headers.length > 0 ? (

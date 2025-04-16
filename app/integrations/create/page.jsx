@@ -37,7 +37,8 @@ export default function CreateIntegrationPage() {
       baseUrl: '',
       path: '',
       headers: [],
-      pathParams: []
+      pathParams: [],
+      body: ''
     },
     response: {
       expectedStatus: [200],

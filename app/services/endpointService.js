@@ -25,7 +25,7 @@ class EndpointService extends BaseService {
    * @returns {Promise<Object>} Endpoint details
    */
   async fetchEndpointById(id) {
-    return this.get(`/${id}`);
+    return this.get(`/id/${id}`);
   }
 
   /**

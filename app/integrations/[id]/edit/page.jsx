@@ -40,7 +40,8 @@ export default function EditIntegrationPage({ params }) {
       baseUrl: '',
       path: '',
       headers: [],
-      pathParams: []
+      pathParams: [],
+      body: ''
     },
     response: {
       expectedStatus: [200],
@@ -292,14 +293,6 @@ export default function EditIntegrationPage({ params }) {
 
   const validateForm = () => {
     // Basic validation
-    if (!formData.integrationCode.trim()) {
-      setNotification({
-        open: true,
-        message: 'Integration code is required',
-        severity: 'error'
-      });
-      return false;
-    }
     
     if (!formData.name.trim()) {
       setNotification({
