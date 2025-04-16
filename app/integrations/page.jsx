@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
-  Paper, Typography, Box, CircularProgress, Button
+  Box, Typography, Paper, CircularProgress, Button,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Chip
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { fetchIntegrations } from '../services/integrationService';
 
 export default function IntegrationsPage() {
@@ -13,16 +15,16 @@ export default function IntegrationsPage() {
   const [integrations, setIntegrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    
     const loadIntegrations = async () => {
       try {
         const data = await fetchIntegrations();
         setIntegrations(data);
       } catch (err) {
+        console.error('Error fetching integrations:', err);
+        setError(err.message);
+        // Fallback to empty array if API fails
         setIntegrations([]);
       } finally {
         setLoading(false);
@@ -40,10 +42,10 @@ export default function IntegrationsPage() {
     e.stopPropagation(); // Prevent row click from triggering
     router.push(`/integrations/${integration.id}/edit`);
   };
-
-  if (!mounted) {
-    return null;
-  }
+  
+  const handleCreateNew = () => {
+    router.push('/integrations/create');
+  };
 
   if (loading) {
     return (
@@ -63,47 +65,79 @@ export default function IntegrationsPage() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>Integrations</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4">Integrations</Typography>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />}
+          onClick={handleCreateNew}
+        >
+          Add New Integration
+        </Button>
+      </Box>
+      
+      <Typography variant="body1" paragraph>
+        Manage your integrations with external systems and services.
+      </Typography>
+      
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="integrations table">
           <TableHead>
             <TableRow>
               <TableCell>Integration Code</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell align="center">Active</TableCell>
               <TableCell>Type</TableCell>
+              <TableCell align="center">Active</TableCell>
+              <TableCell>Version</TableCell>
               <TableCell>Updated At</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {integrations.map((integration) => (
-              <TableRow 
-                key={integration.id}
-                onClick={() => handleRowClick(integration)}
-                sx={{ 
-                  cursor: 'pointer',
-                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' }
-                }}
-              >
-                <TableCell>{integration.integrationCode}</TableCell>
-                <TableCell>{integration.name}</TableCell>
-                <TableCell align="center">{integration.active ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{integration.type}</TableCell>
-                <TableCell>
-                  {new Date(integration.updatedAt).toISOString().split('T')[0]}
-                </TableCell>
-                <TableCell align="center">
-                  <Button 
-                    variant="contained" 
-                    size="small" 
-                    onClick={(e) => handleEdit(e, integration)}
-                  >
-                    Edit
-                  </Button>
+            {integrations.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <Typography variant="body1" sx={{ py: 2 }}>
+                    No integrations found. Click "Add New Integration" to create one.
+                  </Typography>
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              integrations.map((integration) => (
+                <TableRow 
+                  key={integration.id}
+                  onClick={() => handleRowClick(integration)}
+                  sx={{ 
+                    cursor: 'pointer',
+                    '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' }
+                  }}
+                >
+                  <TableCell>{integration.integrationCode}</TableCell>
+                  <TableCell>{integration.name}</TableCell>
+                  <TableCell>{integration.type}</TableCell>
+                  <TableCell align="center">
+                    <Chip 
+                      label={integration.active ? 'Active' : 'Inactive'} 
+                      color={integration.active ? 'success' : 'default'} 
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{integration.version}</TableCell>
+                  <TableCell>
+                    {integration.updatedAt ? new Date(integration.updatedAt).toLocaleDateString() : 'N/A'}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button 
+                      variant="contained" 
+                      size="small" 
+                      onClick={(e) => handleEdit(e, integration)}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

@@ -8,7 +8,8 @@ export default function GeneralSection({
   formData, 
   handleChange, 
   expanded, 
-  handleAccordionChange 
+  handleAccordionChange,
+  isCreateMode = false
 }) {
   return (
     <Accordion 
@@ -28,7 +29,8 @@ export default function GeneralSection({
               onChange={handleChange}
               fullWidth
               required
-              disabled
+              disabled={!isCreateMode}
+              helperText="Unique identifier for this integration (lowercase, no spaces)"
             />
           </Grid>
           <Grid item xs={12} md={6}>

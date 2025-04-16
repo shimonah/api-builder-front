@@ -2,6 +2,7 @@
  * Service for handling integration-related API requests
  */
 import BaseService from './BaseService';
+import config from '../config';
 
 /**
  * Service for handling integration-related API requests
@@ -16,7 +17,20 @@ class IntegrationService extends BaseService {
    * @returns {Promise<Array>} List of integrations
    */
   async fetchIntegrations() {
-    return this.get();
+    try {
+      const response = await fetch(`${config.api.baseUrl}/api/integrations/list`);
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching integrations:', error);
+      
+      // Return empty array if API fails
+      return [];
+    }
   }
 
   /**
@@ -25,7 +39,20 @@ class IntegrationService extends BaseService {
    * @returns {Promise<Object>} Integration details
    */
   async fetchIntegrationById(id) {
-    return this.get(`/${id}`);
+    try {
+      const response = await fetch(`${config.api.baseUrl}/api/integrations/${id}`);
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching integration ${id}:`, error);
+      
+      // Return empty object if API fails
+      return {};
+    }
   }
 
   /**
@@ -34,7 +61,25 @@ class IntegrationService extends BaseService {
    * @returns {Promise<Object>} Created integration
    */
   async createIntegration(integrationData) {
-    return this.post('', integrationData);
+    try {
+      const response = await fetch(`${config.api.baseUrl}/api/integrations/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(integrationData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `API error: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating integration:', error);
+      throw error;
+    }
   }
 
   /**
@@ -44,7 +89,25 @@ class IntegrationService extends BaseService {
    * @returns {Promise<Object>} Updated integration
    */
   async updateIntegration(id, integrationData) {
-    return this.put(`/${id}`, integrationData);
+    try {
+      const response = await fetch(`${config.api.baseUrl}/api/integrations/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(integrationData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `API error: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`Error updating integration ${id}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -53,7 +116,21 @@ class IntegrationService extends BaseService {
    * @returns {Promise<Object>} Deletion result
    */
   async deleteIntegration(id) {
-    return this.delete(`/${id}`);
+    try {
+      const response = await fetch(`${config.api.baseUrl}/api/integrations/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `API error: ${response.status}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error(`Error deleting integration ${id}:`, error);
+      throw error;
+    }
   }
 }
 
@@ -62,4 +139,7 @@ const integrationService = new IntegrationService();
 export default integrationService;
 
 // For backward compatibility with existing code
-export const fetchIntegrations = () => integrationService.fetchIntegrations(); 
+export const fetchIntegrations = () => integrationService.fetchIntegrations();
+export const createIntegration = (data) => integrationService.createIntegration(data);
+export const updateIntegration = (id, data) => integrationService.updateIntegration(id, data);
+export const deleteIntegration = (id) => integrationService.deleteIntegration(id); 
