@@ -90,6 +90,13 @@ class IntegrationService extends BaseService {
    */
   async updateIntegration(id, integrationData) {
     try {
+
+      
+      delete integrationData.integrationCode;
+      delete integrationData.createdAt;
+      delete integrationData.updatedAt;
+      delete integrationData.id;
+      
       const response = await fetch(`${config.api.baseUrl}/api/integrations/${id}`, {
         method: 'PUT',
         headers: {
@@ -140,6 +147,7 @@ export default integrationService;
 
 // For backward compatibility with existing code
 export const fetchIntegrations = () => integrationService.fetchIntegrations();
+export const fetchIntegrationById = (id) => integrationService.fetchIntegrationById(id);
 export const createIntegration = (data) => integrationService.createIntegration(data);
 export const updateIntegration = (id, data) => integrationService.updateIntegration(id, data);
 export const deleteIntegration = (id) => integrationService.deleteIntegration(id); 

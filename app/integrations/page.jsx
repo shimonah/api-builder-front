@@ -35,12 +35,12 @@ export default function IntegrationsPage() {
   }, []);
 
   const handleRowClick = (integration) => {
-    router.push(`/integrations/${integration.id}`);
+    router.push(`/integrations/${integration.integrationCode}`);
   };
 
   const handleEdit = (e, integration) => {
     e.stopPropagation(); // Prevent row click from triggering
-    router.push(`/integrations/${integration.id}/edit`);
+    router.push(`/integrations/${integration.integrationCode}/edit`);
   };
   
   const handleCreateNew = () => {
